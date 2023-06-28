@@ -1,12 +1,13 @@
 import streamlit as st
-import page1, page2, page3, page4
+import page1, page2, page3, page4, pagex
 
 
 PAGES = {
     "How to use your AI notes?": page1,
     "Chapter 1: What are LLMs?": page2,
     "Chapter 2: What is Langchain?": page3,
-    "Experiments": page4
+    "Chapter 3": page4,
+    "Experiments" : pagex,
 
 }
 
