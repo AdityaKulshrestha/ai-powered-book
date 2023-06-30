@@ -1,6 +1,8 @@
 import streamlit as st
+from ui_components import render_chapter
 
 def app():
-    st.title('Page 1')
-    st.write('Welcome to page 1')
+    json_file = 'chapters.json'
+    chapter_id = 0
+    render_chapter(chapter_id, json_file)
 

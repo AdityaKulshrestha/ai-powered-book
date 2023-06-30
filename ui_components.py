@@ -1,35 +1,49 @@
 import json
 import streamlit as st
-from ai_components import llm_agent
+from PIL import Image
+import streamlit.components.v1 as components
+from ai_components import respond_to_query
 
 
-# doubt_container = st.container()
-
-# with doubt_container:
-#     query = st.text_input("Enter your doubt here")
-#     if query:
-#         answer = llm_agent.predict(input = query)
-#         st.write(answer)
-
-# def doubt_container():
-#     with st.container() as container:
-#         container.write("Thanks for asking a doubt.")
-#         query = container.text_input("Enter your doubt here")
-#         if query:
-#             answer = llm_agent.predict(input = query)
-#             container.write(answer) 
-#     return container
+def read_image(image_path):
+    return Image.open(image_path)
 
 
+def render_html():
+    components.html("<html><body><h1>Hello, World</h1></body></html>", width=200, height=200)
 
 
 def doubt_container():
-    container = st.empty()
-    with container:
-        st.write("This is a shared container.")
-        st.text("Some shared text")
-        st.text_input("Enter your doubt here")
-    return container
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+    # with st.container():
+    with st.container():
+        # Display chat messages from history on app rerun
+        for message in st.session_state.messages:
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
+
+        # Accept user input
+        if prompt := st.chat_input("What is up?"):
+            # Add user message to chat history
+            st.session_state.messages.append({"role": "user", "content": prompt})
+            # Display user message in chat message container
+            with st.chat_message("user"):
+                st.markdown(prompt)
+
+            # Display assistant response in chat message container
+            with st.chat_message("assistant"):
+                message_placeholder = st.empty()
+                full_response = ""
+                query_response = respond_to_query(prompt)
+                # Simulate stream of response with milliseconds delay
+                for chunk in query_response.split():
+                    full_response += chunk + " "
+                    # Add a blinking cursor to simulate typing
+                    message_placeholder.markdown(full_response + "▌")
+                message_placeholder.markdown(full_response)
+            # Add assistant response to chat history
+            st.session_state.messages.append({"role": "assistant", "content": full_response})
 
 
 # Define the function
@@ -44,7 +58,7 @@ def render_chapter(chapter_id, json_path):
         if chapter['chapterId'] == chapter_id:
             # Display the chapter title
             st.title(chapter['chapterTitle'])
-            
+
             # Display each section of the chapter
             for section in chapter['sections']:
                 st.header(section['sectionTitle'])
@@ -58,6 +72,9 @@ def render_chapter(chapter_id, json_path):
                     for subsection in section['subsections']:
                         st.subheader(subsection['subsectionTitle'])
                         if 'content' in subsection:
-                            st.markdown('*' + subsection['content'] + '*')  # Wrapping the content inside asterisks will italicize the text in markdown
+                            st.markdown('*' + subsection[
+                                'content'] + '*')  # Wrapping the content inside asterisks will italicize the text in markdown
+                        if 'image' in subsection:
+                            st.image(subsection['image'])
                         if 'code' in subsection:
-                            st.code(subsection['code']) 
+                            st.code(subsection['code'])
