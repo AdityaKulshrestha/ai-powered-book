@@ -6,20 +6,21 @@ import os
 os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
 PAGES = {
-    "How to use your AI notes?": page1,
-    "Chapter 1: What are LLMs?": page2,
-    "Chapter 2: What is Langchain?": page3,
-    "Chapter 3 Overview of the techstack": page4,
-    "Chapter 4: Build your first AI app": page5,
-    "Chapter 5: Test your knowledge": page6
+    "How to use your AI notes?": [page1, '1'],
+    "Chapter 1: What are LLMs?": [page2, '2'],
+    "Chapter 2: What is Langchain?": [page3, '3'],
+    "Chapter 3 Overview of the techstack": [page4, '4'],
+    "Chapter 4: Build your first AI app": [page5, '5'],
+    "Chapter 5: Test your knowledge": [page6, '6']
 
 }
 
 st.sidebar.title('AI-Powered Notes')
 selection = st.sidebar.radio("Go to", list(PAGES.keys()))
-page = PAGES[selection]
+page = PAGES[selection][0]
+key = PAGES[selection][1]
 with st.container():
     page.app()
+    doubt_container(key)
 
 st.divider()
-doubt_container()

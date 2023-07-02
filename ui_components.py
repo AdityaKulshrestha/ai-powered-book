@@ -13,20 +13,19 @@ def render_html():
     components.html("<html><body><h1>Hello, World</h1></body></html>", width=200, height=200)
 
 
-def doubt_container():
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
-    # with st.container():
+def doubt_container(key='1'):
+    if "messages{}".format(key) not in st.session_state:
+        st.session_state['messages{}'.format(key)] = []
     with st.container():
         # Display chat messages from history on app rerun
-        for message in st.session_state.messages:
+        for message in st.session_state['messages{}'.format(key)]:
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
 
         # Accept user input
         if prompt := st.chat_input("What is up?"):
             # Add user message to chat history
-            st.session_state.messages.append({"role": "user", "content": prompt})
+            st.session_state['messages{}'.format(key)].append({"role": "user", "content": prompt})
             # Display user message in chat message container
             with st.chat_message("user"):
                 st.markdown(prompt)
@@ -43,7 +42,7 @@ def doubt_container():
                     message_placeholder.markdown(full_response + "▌")
                 message_placeholder.markdown(full_response)
             # Add assistant response to chat history
-            st.session_state.messages.append({"role": "assistant", "content": full_response})
+            st.session_state['messages{}'.format(key)].append({"role": "assistant", "content": full_response})
 
 
 # Define the function
